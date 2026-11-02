@@ -66,7 +66,14 @@ WORKDIR /usr/src/app
 COPY . .
 WORKDIR /usr/src/app/packages/hoppscotch-selfhost-web/webapp-server
 RUN go mod download
-RUN CGO_ENABLED=0 GOOS=linux go build -o webapp-server .
+# Optional build-specific bundle version so desktop clients re-download the bundle
+# when the same release is rebuilt. Leave unset to keep the version from the source.
+ARG WEBAPP_SERVER_VERSION=
+RUN LDFLAGS=""; \
+  if [ -n "${WEBAPP_SERVER_VERSION}" ]; then \
+    LDFLAGS="-X hoppscotch-selfhost-web/webapp-server/internal/bundle.Version=${WEBAPP_SERVER_VERSION}"; \
+  fi; \
+  CGO_ENABLED=0 GOOS=linux go build -ldflags "${LDFLAGS}" -o webapp-server .
 
 
 

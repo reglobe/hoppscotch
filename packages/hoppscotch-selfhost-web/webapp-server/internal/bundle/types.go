@@ -2,9 +2,12 @@ package bundle
 
 import "time"
 
-const (
-	Version = "2026.9.0"
+// Version is reported in the bundle manifest. The desktop app reuses its cached
+// bundle whenever this string matches, so a rebuild of the same release must set
+// a different value at build time (-ldflags "-X ...bundle.Version=<value>").
+var Version = "2026.9.0"
 
+const (
 	DefaultMaxSize = 50 * 1024 * 1024
 
 	// zstd compression method for ZIP
